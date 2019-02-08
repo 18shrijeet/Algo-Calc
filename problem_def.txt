@@ -1,0 +1,37 @@
+Problem Definition:
+Develop a C-library of an integer of arbitrary length, let us call it as “intal” in short. The functionalities to be implemented in the library are declared in the header file given at the end of the document.
+
+Library "intal", short for integer of arbitrary length, a library of nonnegative integers of 
+arbitrary length. The given header file "intal.h" declares the functionalities the library is 
+expected to provide except that there is no definition of the "intal" itself. That is left to
+the implementation file, which should declare the structure of the intal along with defining
+the functionalities declared in intal.h. Don't modify intal.h, all of your contribution must
+be limited to one file; intal.c. When you submit the intal.c, we are going to compile it with
+intal.h and a client file of our own to test the functionalities.
+
+Client treats an intal (an integer of arbitrary length) as an object pointed by a pointer "void*".
+An intal can be created by intal_create() by providing a char string of a nonnegative integer provided
+in decimal digits. Some intals are created out of some functionalities like intal_add(), which 
+creates a new intal. A new intal created must have allocated a dynamic memory (may be by a 
+malloc() call). Responsibility of destroying the intals created lies with the client by
+calling intal_destroy(), which will free whatever memory allocated during the creation of intal.
+Client sees an intal as a "void*". It could be a pointer to char array, int array, long int array, 
+double array, or a struct array. There is no theoretical limit to the size of the integer, but memory 
+limitations of the process (Operating System). If the OS allows, your library should be able to hold the 
+largest prime number known, which is 23,249,425 digits long (as of Feb 2018).
+
+*********************************************
+For intal_multiply(), do we have to use Karatsuba algorithm?
+One of the test-cases would expect Karatsuba algorithm because it expects an efficient implementation for a large input. Other than that, even a long multiplication algorithm should work for all other test-cases.
+Is it alright to make intal work for 8-digit long integers?
+No, mostly none of the test-cases will pass. All test-cases deal with 100 or more digit long integers. We have a max limit of 10,000 digit long integers. The reason why we don’t test for 8-digit long integers is, even our fixed length data types like “long int” in C can handle them.
+An intal being a null pointer.
+You know that the client looks at the intal as a void pointer. A null pointer is treated as not a number (NaN in short). NaN is not zero.
+“NaN”s are generated in instances like divide-by-zero. 
+intal_create() works more like atoi() which converts the initial portion of the string. That is, if considers only decimal digits, and as soon as it it parses a non-digit, it just processes whatever digits it has already received. If the first character is itself a non-digit, it returns 0.
+intal_destroy(void* intal) does nothing if the intal is null.
+char* intal2str(void* intal) returns "NaN" if the intal is null.
+intal_increment(), intal_decrement(), intal_add(), intal_diff(), intal_multiply(), intal_divide(), intal_pow() returns a null pointer if the intal is null.
+intal_compare() returns 0, but that doesn't both intals are equal.
+Size of the intal.
+Even though there is no theoretical limit to the size of the intal, we make sure that you don't need to handle an intal having more 10,000 digits in decimal base system. All the functions, whenever they return an intal, it should have stripped off the leading zeros. For example, addition of "0123" and "55" should be returned as "178". Obviously, the length of the integer in decimal digits is excluding the leading zeros.
